@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "562698812740",
+    "project_id": "fortune-630b3",
+    "storage_bucket": "fortune-630b3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:562698812740:android:54e6844e668c6f8549eb11",
+        "android_client_info": {
+          "package_name": "com.fintech"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAh6WAEWFp9bMqN-DRMqj4FiWzVK2z3wuU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
