@@ -25,7 +25,7 @@ export const BikeProvider = ({ children }) => {
         {
           id: 2,
           type: 'Mountain',
-          name: 'All-Terrain Mountain Bike',
+          name: 'All-Terrain Mountain Bikes',
           image: require('../img/moter.png'),
           price: 899.99,
           details: 'A durable bike for rough terrains.',
