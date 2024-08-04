@@ -1,10 +1,10 @@
 import React from 'react';
-import { View, Text, StyleSheet, } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 
 const ProfileScreen = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Profile Screen</Text>
+      <Text style={styles.title}>DocumentsScreen </Text>
       {/* Add profile details and functionalities here */}
     </View>
   );

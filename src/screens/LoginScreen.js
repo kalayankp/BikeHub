@@ -1,222 +1,185 @@
-import React, { useRef, useState } from 'react';
-import { View, TextInput, Text, ActivityIndicator, TouchableOpacity, Keyboard, TouchableWithoutFeedback, Dimensions, StyleSheet, Platform, StatusBar, Image } from 'react-native';
-import { Formik } from 'formik';
-import * as Yup from 'yup';
-import * as Animatable from 'react-native-animatable';
-import LinearGradient from 'react-native-linear-gradient';
-import { useDispatch } from 'react-redux';
-import { login } from '../redux/authSlice';
+import React, { useState } from 'react';
+import { View, Text, Image, StyleSheet, Dimensions, KeyboardAvoidingView, TextInput, Alert } from 'react-native';
+import { Button, Input } from 'react-native-elements';
 
-const { width, height } = Dimensions.get('window');
+// Signup Screen
+const SignupScreen = ({ navigation }) => {
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [generatedOTP, setGeneratedOTP] = useState(null);
+  const [phoneNumberError, setPhoneNumberError] = useState(null); 
 
-const loginValidationSchema = Yup.object().shape({
-  email: Yup.string().email('Invalid email').required('Email is required'),
-  password: Yup.string().required('Password is required').min(6, 'Password must be at least 6 characters'),
-});
+  const handleGetOTP = () => {
+    // Phone Number Validation
+    if (!validatePhoneNumber(phoneNumber)) {
+      setPhoneNumberError('Please enter a valid phone number.');
+      return; // Stop if validation fails
+    } 
 
-const evaluatePasswordStrength = (password) => {
-  let strength = 0;
-  if (password.length > 6) strength += 10;
-  if (password.match(/[a-z]/)) strength += 10;
-  if (password.match(/[A-Z]/)) strength += 20;
-  if (password.match(/[0-9]/)) strength += 20;
-  if (password.match(/[^a-zA-Z0-9]/)) strength += 20;
-  return strength;
-};
+    // Generate OTP
+    const newOTP = Math.floor(100000 + Math.random() * 900000).toString();
+    setGeneratedOTP(newOTP); 
 
-const LoginForm = ({ navigation }) => {
-  const passwordInputRef = useRef(null);
-  const [passwordStrength, setPasswordStrength] = useState(0);
-  const [isTyping, setIsTyping] = useState(false);
-  const dispatch = useDispatch();
+    // Navigate to OTP Verification screen
+    navigation.navigate('OTP', { phoneNumber, otp: newOTP });
+  };
+
+  // Basic Phone Number Validation using Regex (replace with more robust validation if needed)
+  const validatePhoneNumber = (number) => {
+    // Regex for common phone number formats
+    const phoneNumberRegex = /^\d{10}$/; // 10 digits
+    return phoneNumberRegex.test(number);
+  };
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={styles.container}>
-        <StatusBar barStyle="dark-content" />
-        <LinearGradient colors={['#e0e0e0', '#ffffff']} style={styles.gradient}>
-          <View style={styles.header}>
-            <Image source={require('../img/twitter.png')} style={styles.welcomeImage} />
-            <Text style={styles.welcomeText}>Welcome Back!</Text>
-          </View>
-          <Formik
-            initialValues={{ email: '', password: '' }}
-            validationSchema={loginValidationSchema}
-            onSubmit={(values, { setSubmitting }) => {
-              setSubmitting(true);
-              // Perform login action here
-              console.log(values);
-              // Simulate API call and dispatch login action
-              setTimeout(() => {
-                dispatch(login(values.email, 'dummy-token'));
-                setSubmitting(false);
-              }, 2000);
-            }}
-          >
-            {({ handleChange, handleBlur, handleSubmit, values, errors, touched, isSubmitting }) => (
-              <Animatable.View animation="fadeInUp" duration={1500} style={styles.formContainer}>
-                <Animatable.View animation="fadeInRight" duration={1000} delay={500}>
-                  <TextInput
-                    placeholder="Email"
-                    style={[styles.input, isTyping ? styles.inputActive : null]}
-                    onChangeText={(text) => {
-                      handleChange('email')(text);
-                      setIsTyping(true);
-                    }}
-                    onBlur={handleBlur('email')}
-                    value={values.email}
-                    keyboardType="email-address"
-                    returnKeyType="next"
-                    onSubmitEditing={() => passwordInputRef.current.focus()}
-                  />
-                  {touched.email && errors.email && <Text style={styles.error}>{errors.email}</Text>}
-                </Animatable.View>
-                <Animatable.View animation="fadeInRight" duration={1000} delay={700}>
-                  <TextInput
-                    placeholder="Password"
-                    style={[styles.input, isTyping ? styles.inputActive : null]}
-                    onChangeText={(text) => {
-                      handleChange('password')(text);
-                      setPasswordStrength(evaluatePasswordStrength(text));
-                      setIsTyping(true);
-                    }}
-                    onBlur={handleBlur('password')}
-                    value={values.password}
-                    secureTextEntry
-                    ref={passwordInputRef}
-                    returnKeyType="done"
-                    onSubmitEditing={handleSubmit}
-                  />
-                  {touched.password && errors.password && <Text style={styles.error}>{errors.password}</Text>}
-                  <View style={styles.strengthContainer}>
-                    <View style={[styles.strengthBar, { width: `${passwordStrength}%` }]} />
-                  </View>
-                  <Text style={styles.strengthText}>
-                    {passwordStrength < 30 ? 'Weak' : passwordStrength < 60 ? 'Moderate' : 'Strong'}
-                  </Text>
-                </Animatable.View>
-                <Animatable.View animation="fadeInUp" duration={1000} delay={900}>
-                  <TouchableOpacity style={styles.button} onPress={handleSubmit} disabled={isSubmitting}>
-                    {isSubmitting ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>Login</Text>}
-                  </TouchableOpacity>
-                </Animatable.View>
-                <Animatable.View animation="fadeInUp" duration={1000} delay={1100}>
-                  <TouchableOpacity style={styles.signupButton} onPress={() => navigation.navigate('SignUp')}>
-                    <Text style={styles.signupButtonText}>Sign Up</Text>
-                  </TouchableOpacity>
-                </Animatable.View>
-              </Animatable.View>
-            )}
-          </Formik>
-        </LinearGradient>
+    <KeyboardAvoidingView style={styles.container} behavior="padding">
+      <Image source={require('../img/bike.jpg')} style={styles.bikeImage} />
+      <Text style={styles.title}>Sign Up</Text>
+
+      <View style={styles.inputContainer}>
+        <TextInput
+          placeholder="Phone Number"
+          keyboardType="phone-pad"
+          value={phoneNumber}
+          onChangeText={(text) => {
+            setPhoneNumber(text);
+            if (validatePhoneNumber(text)) {
+              setPhoneNumberError(null); // Clear error if valid
+            }
+          }}
+          style={styles.input}
+          placeholderTextColor="#999"
+        />
+        {phoneNumberError && <Text style={styles.errorText}>{phoneNumberError}</Text>} 
       </View>
-    </TouchableWithoutFeedback>
+
+      <Button
+        title="Get OTP"
+        buttonStyle={styles.button}
+        titleStyle={styles.buttonTitle}
+        onPress={handleGetOTP}
+      />
+      <Text style={styles.terms}>By signing up, you agree to our Terms and conditions.</Text>
+    </KeyboardAvoidingView>
   );
 };
+
+// OTP Verification Screen
+const OTPVerificationScreen = ({ route, navigation }) => {
+  const { phoneNumber, otp } = route.params;
+  const [enteredOTP, setEnteredOTP] = useState('');
+  const [otpError, setOtpError] = useState(null); 
+
+  const handleVerifyOTP = () => {
+    // Basic OTP Validation
+    if (!enteredOTP || enteredOTP.length !== 6 || isNaN(enteredOTP)) {
+      setOtpError('Please enter a valid 6-digit OTP.');
+      return; // Stop if validation fails
+    }
+
+    if (enteredOTP === otp) {
+      // OTP is correct! Proceed with registration or whatever logic you have
+      console.log('OTP Verified!');
+      // ... Your actions here 
+      // Example: Navigate to next screen
+      navigation.navigate('RegistrationComplete'); 
+
+    } else {
+      // Invalid OTP
+      console.log('Incorrect OTP');
+      setOtpError('Incorrect OTP. Please try again.');
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text>Enter the OTP sent to {phoneNumber}</Text>
+      <TextInput
+        style={styles.input}
+        keyboardType="number-pad"
+        value={enteredOTP}
+        onChangeText={(text) => {
+          setEnteredOTP(text);
+          if (text.length === 6 && !isNaN(text)) {
+            setOtpError(null); // Clear error if valid
+          }
+        }}
+      />
+      {otpError && <Text style={styles.errorText}>{otpError}</Text>}
+      <Button title="Verify OTP" onPress={handleVerifyOTP} />
+    </View>
+  );
+};
+
+const { height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
-    justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: '#f5f5f5',
+    padding: 20,
   },
-  gradient: {
-    flex: 1,
-    width: width,
-    height: height,
-    paddingHorizontal: 20,
-    paddingVertical: 40,
+  bikeImage: {
+    width: '100%',
+    height: height * 0.36,
+    resizeMode: 'cover',
+    borderRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.4,
+    shadowRadius: 10,
+    elevation: 12,
+    marginBottom: 40,
   },
-  header: {
-    alignItems: 'center',
-    marginBottom: 30,
-  },
-  welcomeImage: {
-    width: width * 0.3,
-    height: width * 0.3,
-    borderRadius: (width * 0.3) / 2,
-    marginBottom: 10,
-    resizeMode: 'contain',
-  },
-  welcomeText: {
-    fontSize: 28,
+  title: {
+    fontSize: 24,
     fontWeight: 'bold',
+    marginBottom: 20,
     color: '#333',
     textAlign: 'center',
   },
-  formContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-  },
-  input: {
-    height: height * 0.07,
-    width: width * 0.9,
-    borderColor: '#ddd',
-    borderWidth: 1,
-    borderRadius: 10,
-    marginBottom: 10,
-    paddingHorizontal: 15,
-    fontSize: 16,
+  inputContainer: {
     backgroundColor: '#fff',
+    borderRadius: 50,
+    paddingHorizontal: 20,
+    marginBottom: 30,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 2,
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
   },
-  inputActive: {
-    borderColor: '#6C63FF',
-    borderWidth: 2,
+  input: {
+    fontSize: 16,
+    color: '#333',
+    paddingVertical: 14,
   },
   button: {
-    height: height * 0.07,
-    width: width * 0.9,
-    backgroundColor: '#6C63FF',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 10,
-    marginTop: 20,
+    backgroundColor: '#4CAF50',
+    borderRadius: 50,
+    paddingVertical: 16,
+    paddingHorizontal: 30,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
+    marginTop: 50,
   },
-  buttonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  signupButton: {
-    marginTop: 20,
-    alignItems: 'center',
-  },
-  signupButtonText: {
-    color: '#6C63FF',
+  buttonTitle: {
     fontSize: 16,
     fontWeight: 'bold',
+    color: '#fff',
   },
-  error: {
+  terms: {
+    textAlign: 'center',
+    color: '#666',
+    marginTop: 20,
+  },
+  errorText: {
     color: 'red',
-    fontSize: 12,
-    marginBottom: 10,
-  },
-  strengthContainer: {
-    height: 5,
-    width: '100%',
-    backgroundColor: '#ddd',
-    borderRadius: 2.5,
-    marginTop: 10,
-  },
-  strengthBar: {
-    height: '100%',
-    backgroundColor: '#6C63FF',
-    borderRadius: 2.5,
-  },
-  strengthText: {
+    fontSize: 14,
     marginTop: 5,
-    fontSize: 12,
-    color: '#6C63FF',
   },
 });
 
-export default LoginForm;
+export default SignupScreen; 

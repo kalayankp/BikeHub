@@ -1,61 +1,39 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
-
-// Sample profile image
-import ProfileImage from '../img/profile.png';
+import { useNavigation } from '@react-navigation/native';
 
 const ProfileScreen = () => {
-  const handleEditProfile = () => {
-    // Handle profile editing
-  };
+  const navigation = useNavigation();
 
-  const handleSettings = () => {
-    // Navigate to settings screen
-  };
-
-  const handleLogout = () => {
-    // Handle logout
-  };
-
-  const handleChangePassword = () => {
-    // Navigate to change password screen
-  };
-
-  const handleHelpSupport = () => {
-    // Navigate to help & support screen
-  };
-
-  const handlePrivacyPolicy = () => {
-    // Navigate to privacy policy screen
+  const handleLogoutPress = () => {
+    // Perform logout logic (e.g., clear local storage, redirect)
+    console.log('Logout pressed');
+    navigation.navigate('Login'); // Navigate back to LoginScreen
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.profileHeader}>
-        <Image source={ProfileImage} style={styles.profileImage} />
-        <Text style={styles.profileName}>John Doe</Text>
-        <Text style={styles.profileEmail}>johndoe@example.com</Text>
+        <Image
+          source={{ uri: 'https://via.placeholder.com/100' }} 
+          style={styles.profileImage}
+        />
+        <Text style={styles.userName}>John Doe</Text>
+        <Text style={styles.userEmail}>john.doe@example.com</Text>
       </View>
 
-      <View style={styles.buttonsContainer}>
-        <TouchableOpacity style={styles.button} onPress={handleEditProfile}>
-          <Text style={styles.buttonText}>Edit Profile</Text>
+      <View style={styles.optionsContainer}>
+        <TouchableOpacity style={styles.optionButton} onPress={() => navigation.navigate('Bikes')}>
+          <Text style={styles.optionText}>Dashboard</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={handleSettings}>
-          <Text style={styles.buttonText}>Settings</Text>
+        <TouchableOpacity style={styles.optionButton} onPress={() => navigation.navigate('Map')}>
+          <Text style={styles.optionText}>Maps</Text>
         </TouchableOpacity>
-     
-        <TouchableOpacity style={styles.button} onPress={handleChangePassword}>
-          <Text style={styles.buttonText}>Change Password</Text>
+        <TouchableOpacity style={styles.optionButton} onPress={() => navigation.navigate('Documents')}>
+          <Text style={styles.optionText}>Documents</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={handleHelpSupport}>
-          <Text style={styles.buttonText}>Help & Support</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={handlePrivacyPolicy}>
-          <Text style={styles.buttonText}>Privacy Policy</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={handleLogout}>
-          <Text style={styles.buttonText}>Logout</Text>
+        <TouchableOpacity style={[styles.optionButton, styles.logoutButton]} onPress={handleLogoutPress}>
+          <Text style={styles.optionText}>Logout</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -65,41 +43,52 @@ const ProfileScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
-    padding: 20,
+    backgroundColor: '#f5f5f5',
+    padding: 16,
   },
   profileHeader: {
     alignItems: 'center',
-    marginBottom: 30,
+    marginBottom: 32,
   },
   profileImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    marginBottom: 10,
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    marginBottom: 16,
+    borderColor: '#ddd',
+    borderWidth: 2,
   },
-  profileName: {
-    fontSize: 24,
+  userName: {
+    fontSize: 26,
     fontWeight: 'bold',
     color: '#333',
   },
-  profileEmail: {
+  userEmail: {
     fontSize: 16,
-    color: '#777',
+    color: '#666',
+    marginTop: 4,
   },
-  buttonsContainer: {
-    marginTop: 20,
+  optionsContainer: {
+    flex: 1,
   },
-  button: {
-    backgroundColor: '#007BFF',
-    padding: 15,
-    borderRadius: 5,
-    marginBottom: 10,
+  optionButton: {
+    backgroundColor: '#007bff',
+    paddingVertical: 15,
+    marginVertical: 8,
+    borderRadius: 8,
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 3,
   },
-  buttonText: {
-    color: '#FFF',
-    fontSize: 16,
+  logoutButton: {
+    backgroundColor: '#ff4d4d',
+  },
+  optionText: {
+    color: '#fff',
+    fontSize: 18,
     fontWeight: 'bold',
   },
 });
