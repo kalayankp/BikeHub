@@ -26,7 +26,7 @@ export const BikeProvider = ({ children }) => {
           id: 2,
           type: 'Mountain',
           name: 'All-Terrain Mountain Bike',
-          image: require('../img/one.png'),
+          image: require('../img/moter.png'),
           price: 899.99,
           details: 'A durable bike for rough terrains.',
           specifications: ['Speed: 20 mph', 'Weight: 20 lbs'],
@@ -149,7 +149,7 @@ export const BikeProvider = ({ children }) => {
           specifications: ['Speed: 28 mph', 'Weight: 40 lbs', 'Battery: 500 Wh'],
         },
         {
-          id: 16,
+          id: 1,
           type: 'BMX',
           name: 'Freestyle BMX Bike',
           image: require('../img/bike.jpg'),
